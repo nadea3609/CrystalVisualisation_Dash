@@ -2,6 +2,8 @@ from dash import Dash, dcc, html, Input, Output, callback
 import numpy as np
 import plotly.graph_objects as go
 
+from arrows_lines import create_arrows, create_lines
+
 # axis values
 size = np.linspace(0, 1, 1001)
 app = Dash()
@@ -45,6 +47,7 @@ app.layout = html.Div([
 ])
 
 
+# callback to generate right side graph
 @callback(
     Output('right-fig', 'figure'),
     Output('txt-output', 'children'),
@@ -67,43 +70,33 @@ def update_graph(hoverData):
         'x': [0,
               origin['a'] + vals['v1'],
               origin['a'] + vals['v2'] * np.cos(vals['ang']),
-              origin['a'] - vals['v1'] - vals['v2'] * np.cos(vals['ang'])
+              origin['a'] - vals['v1'] - vals['v2'] * np.cos(vals['ang']),
+              origin['a'] + vals['v1'] + vals['v2'] * np.cos(vals['ang'])
               ],
         'y': [0,
               origin['b'],
               origin['b'] + vals['v2'] * np.sin(vals['ang']),
-              origin['b'] - vals['v2'] * np.sin(vals['ang'])
+              origin['b'] - vals['v2'] * np.sin(vals['ang']),
+              origin['b'] + vals['v2'] * np.sin(vals['ang'])
               ]
         }
     txt = f"v1= {'%.3f' % vals['v1']}, v2={'%.3f' % vals['v2']}, ang={'%.3f' % (vals['ang'] * 180/np.pi)}"
+    colours = ['black', 'black', 'black', 'black', 'grey']
     fig_r = go.Figure(data=[go.Scatter(data, mode='markers',
-                                       marker=dict(size=[20, 20, 20, 1],
-                                                   color='black'),
+                                       marker=dict(size=[20, 20, 20, 1, 10],
+                                                   color=colours),
                                        hoverinfo='none'
                                        )],
                       layout=go.Layout(width=600, height=600)
                       )
     arrow_cols = ["green", "blue", "red"]
-    arrows = [
-            go.layout.Annotation(dict(
-                x=data['x'][1], y=data['y'][1], xref="x", yref="y",
-                text="", showarrow=True, axref="x", ayref='y',
-                ax=origin['a'], ay=origin['b'], arrowhead=3,
-                arrowwidth=2, arrowcolor=arrow_cols[0])),
-            go.layout.Annotation(dict(
-                x=data['x'][2], y=data['y'][2], xref="x", yref="y",
-                text="", showarrow=True, axref="x", ayref='y',
-                ax=origin['a'], ay=origin['b'], arrowhead=3,
-                arrowwidth=2, arrowcolor=arrow_cols[1])),
-            go.layout.Annotation(dict(
-                x=data['x'][3], y=data['y'][3], xref="x", yref="y",
-                text="", showarrow=True, axref="x", ayref='y',
-                ax=origin['a'], ay=origin['b'], arrowhead=3,
-                arrowwidth=2, arrowcolor=arrow_cols[2])),
-    ]
+    arrows = create_arrows(data, origin, arrow_cols)
+    lines = create_lines(data)
     for arr in arrows:
         fig_r.add_annotation(arr)
-    fig_r.update_xaxes(range=[-0.6, 0.6])
+    for line in lines:
+        fig_r.add_annotation(line)
+    fig_r.update_xaxes(range=[-1, 1])
     fig_r.update_yaxes(range=[-1, 1])
     if (hover['x'] + hover['y']) >= 1:
         txt = "cursor is outside triangle"
