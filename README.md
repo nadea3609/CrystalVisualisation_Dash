@@ -8,3 +8,4 @@ Dash Callbacks (input/output)
 Numpy
 Plotly:
 plotly graph objects
+plotly_gif
