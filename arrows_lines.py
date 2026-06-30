@@ -2,14 +2,18 @@ import plotly.graph_objects as go
 import numpy as np
 
 
-def create_arrows(vals, origin, colours):
+def create_arrows(vals, origin, colours, sign):
     """Function for creating arrows for the vectors of the superbase"""
     arrows = []
     dx = vals['v1']
     dy = vals['v2'] * np.sin(vals['ang'])
     dy_x = vals['v2'] * np.cos(vals['ang'])  # x component of dy
-    x_vals = [origin['x'] + dx, origin['x'] + dy_x, origin['x'] - dx - dy_x]
-    y_vals = [origin['y'], origin['y'] + dy, origin['y'] - dy]
+    if sign == "+":
+        x_vals = [origin['x'] + dx, origin['x'] + dy_x, origin['x'] - dx - dy_x]
+        y_vals = [origin['y'], origin['y'] + dy, origin['y'] - dy]
+    else:
+        x_vals = [origin['x'] - dx, origin['x'] - dy_x, origin['x'] + dx + dy_x]
+        y_vals = [origin['y'], origin['y'] - dy, origin['y'] + dy]
     for i in range(0, 3):
         arrows.append(
             go.layout.Annotation(dict(

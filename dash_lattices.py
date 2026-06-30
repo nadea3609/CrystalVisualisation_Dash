@@ -1,12 +1,16 @@
-from dash import Dash, dcc, html, Input, Output, callback
+from dash import Dash, dcc, html, ctx, Input, Output, callback
+from plotly_gif import GIF, capture
 import numpy as np
 import plotly.graph_objects as go
 
 from arrows_lines import create_arrows
 from lattice_points import create_lattice_points
+from lattice_vals import generate_vals
+from lattice_gif import generate_gif_frame
 
 # constants and configs
 size = np.linspace(0, 1, 1001)
+origin = {'x': 0, 'y': 0}
 config = {'displayModeBar': False}
 app = Dash()
 
@@ -23,12 +27,51 @@ fig_l = go.Figure(data=[go.Heatmap(x=size, y=size,
                      height=600
                   ))
 
-fig_l.add_shape(dict(type="path",
-                path="M 0 0 L 0 1 L 1 0 Z",
+fig_l.add_shape(type="rect",
+                xref='x', yref='y',
+                x0=0, x1=1, y0=0, y1=1,
                 fillcolor="yellow",
-                line_color="Yellow"
-                     )
+                line=dict(
+                    color="yellow",
+                    width=1
+                         )
                 )
+# fig_l.add_shape(dict(type="path",
+#                 path="M 0 0 L 0 1 L 1 0 Z",
+#                 fillcolor="yellow",
+#                 line_color="Yellow"
+#                      )
+#                 )
+fig_l.add_shape(type="line",
+                x0=0, y0=0, x1=0, y1=1,
+                line=dict(
+                    color="orange",
+                    width=3
+                ))
+fig_l.add_shape(type="line",
+                x0=1, y0=0, x1=1, y1=1,
+                line=dict(
+                    color="orange",
+                    width=3
+                ))
+fig_l.add_shape(type="line",
+                x0=1, y0=0, x1=0, y1=1,
+                line=dict(
+                    color="RoyalBlue",
+                    width=3
+                ))
+fig_l.add_shape(type="line",
+                x0=0, y0=0, x1=1, y1=0,
+                line=dict(
+                    color="green",
+                    width=3
+                ))
+fig_l.add_shape(type="line",
+                x0=0, y0=1, x1=1, y1=1,
+                line=dict(
+                    color="green",
+                    width=3
+                ))
 fig_l.update_xaxes(range=[-0.1, 1.1])
 fig_l.update_yaxes(range=[-0.1, 1.1])
 fig_l.update_layout()
@@ -36,7 +79,28 @@ fig_l.update_layout()
 app.layout = html.Div([
     html.Div([
         html.H2('Hover over left plot to generate basis on right plot')
-    ], style={'width': '100%', 'display': 'inline-block'}),
+    ], style={'width': '49%', 'display': 'inline-block', 'padding': '0 10'}),
+    html.Div([
+        html.H3('Select start and end values and press generate to create gif of lattices between those points'),
+        dcc.Input(
+            id="input_x0", type="number", placeholder="Start X",
+            min=0, max=1, step=0.001, debounce=True
+            ),
+        dcc.Input(
+            id="input_x1", type="number", placeholder="End X",
+            min=0, max=1, step=0.001, debounce=True
+            ),
+        dcc.Input(
+            id="input_y0", type="number", placeholder="Start Y",
+            min=0, max=1, step=0.001, debounce=True
+            ),
+        dcc.Input(
+            id="input_y1", type="number", placeholder="End Y",
+            min=0, max=1, step=0.001, debounce=True
+            ),
+        dcc.Button(id='gif-button', children="Generate", n_clicks=0),
+        html.Div(id='confirm')
+        ], style={'width': '49%', 'display': 'inline-block'}),
     html.Div([
         dcc.Graph(figure=fig_l,
                   hoverData={'points': [{"x": 0, "y": 0}]},
@@ -58,48 +122,18 @@ app.layout = html.Div([
 )
 def update_graph(hoverData):
     hover = hoverData['points'][0]
-    origin = {'x': 0, 'y': 0}
-    r12 = 1/3 * hover['y']
-    r01 = 1/6 * (3 - 3*hover['x']-hover['y'])
-    r02 = 1/6 * (3+3*hover['x']-hover['y'])
-    den = -4*hover['y'] ** 2
-    num = np.sqrt(((9*(hover['x'] ** 2) + 5*(hover['y'] ** 2) - 6*hover['y'] + 9) ** 2) - 36*(hover['x'] ** 2) * (3-hover['y']) ** 2)
-    vals = {
-        'v1': np.sqrt(r12 ** 2 + r01 ** 2),
-        'v2': np.sqrt(r12 ** 2 + r02 ** 2),
-        'ang': np.acos(den/num)
-        }
+    if hover['x'] + hover['y'] >= 1:
+        hover_x = 1 - hover['y']
+        hover_y = 1 - hover['x']
+    else:
+        hover_x = hover['x']
+        hover_y = hover['y']
+    vals = generate_vals(hover_x, hover_y)
+    if (hover['x'] + hover['y']) >= 1:
+        txt = f"v1= {'%.3f' % vals['v1']}, v2={'%.3f' % (vals['v2'])}, ang={'%.3f' % ((vals['ang']) * 180/np.pi)}"
+    else:
+        txt = f"v1= {'%.3f' % vals['v1']}, v2={'%.3f' % vals['v2']}, ang={'%.3f' % (vals['ang'] * 180/np.pi)}"
     data = create_lattice_points(vals, origin, 2)
-    # dx = vals['v1']
-    # dy = vals['v2'] * np.sin(vals['ang'])
-    # dy_x = vals['v2'] * np.cos(vals['ang']) # x component of dy
-    # data = {
-    #     'x': [origin['x'], origin['x'] + dx, origin['x'] + dy_x,
-    #           origin['x'] - dx - dy_x, origin['x'] + dx + dy_x,
-    #           origin['x'] - dx, origin['x'] - dy_x,
-    #           origin['x'] - dx + dy_x, origin['x'] + dx - dy_x
-    #           ],
-    #     'y': [origin['y'], origin['y'], origin['y'] + dy,
-    #           origin['y'] - dy, origin['y'] + dy, origin['y'],
-    #           origin['y'] - dy, origin['y'] + dy, origin['y'] - dy
-    #           ]
-    #     }
-    # for i in range(1, len(data['x'])):
-    #     extend_x = 2 * data['x'][i]
-    #     extend_y = 2 * data['y'][i]
-    #     data['x'].append(extend_x)
-    #     data['y'].append(extend_y)
-    #     if i == 1 or i == 5:
-    #         data['x'].append(extend_x + dy_x)
-    #         data['x'].append(extend_x - dy_x)
-    #         data['y'].append(extend_y + dy)
-    #         data['y'].append(extend_y - dy)
-    #     elif i == 2 or i == 6:
-    #         data['x'].append(extend_x + dx)
-    #         data['x'].append(extend_x - dx)
-    #         data['y'].append(extend_y)
-    #         data['y'].append(extend_y)
-    txt = f"v1= {'%.3f' % vals['v1']}, v2={'%.3f' % vals['v2']}, ang={'%.3f' % (vals['ang'] * 180/np.pi)}"
     fig_r = go.Figure(data=[go.Scatter(data, mode='markers',
                                        marker=dict(size=20,
                                                    color='black'),
@@ -108,16 +142,50 @@ def update_graph(hoverData):
                       layout=go.Layout(width=600, height=600)
                       )
     arrow_cols = ["green", "blue", "red"]
-    arrows = create_arrows(vals, origin, arrow_cols)
+    if (hover['x'] + hover['y']) >= 1:
+        arrows = create_arrows(vals, origin, arrow_cols, "-")
+    else:
+        arrows = create_arrows(vals, origin, arrow_cols, "+")
     for arr in arrows:
         fig_r.add_annotation(arr)
     fig_r.update_xaxes(range=[-1.5, 1.5])
     fig_r.update_yaxes(range=[-1.5, 1.5])
-    if (hover['x'] + hover['y']) >= 1:
-        txt = "cursor is outside triangle"
-        return None, txt
+    return fig_r, txt
+
+
+# Callback for gif generation
+@callback(
+    Output('confirm', 'children'),
+    Input('input_x0', 'value'),
+    Input('input_x1', 'value'),
+    Input('input_y0', 'value'),
+    Input('input_y1', 'value'),
+    Input('gif-button', 'n_clicks')
+)
+def output_gif(x0, x1, y0, y1, n_clicks):
+    gif = GIF()
+    check_val = [isinstance(x0, (int, float)),
+                 isinstance(x1, (int, float)),
+                 isinstance(y0, (int, float)),
+                 isinstance(y1, (int, float))
+                 ]
+    if all(check_val) and not all([x0 == x1, y0 == y1]):
+        x_range = np.linspace(x0, x1, 100, dtype=float)
+        y_range = np.linspace(y0, y1, 100, dtype=float)
     else:
-        return fig_r, txt
+        return ""
+    if n_clicks != 0 and ctx.triggered_id == 'gif-button':
+
+        @capture(gif)
+        def plot_gif(x_, y_):
+            fig = generate_gif_frame(x_, y_, origin)
+            return fig
+        for x, y in zip(x_range, y_range):
+            plot_gif(x, y)
+        gif.create_gif(gif_path=f"lattice_gif_{n_clicks}.gif")
+        return "gif created successfully!"
+    else:
+        return ""
 
 
 if __name__ == "__main__":
