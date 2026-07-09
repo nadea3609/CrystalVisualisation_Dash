@@ -27,21 +27,27 @@ fig_l = go.Figure(data=[go.Heatmap(x=size, y=size,
                      height=600
                   ))
 
-fig_l.add_shape(type="rect",
-                xref='x', yref='y',
-                x0=0, x1=1, y0=0, y1=1,
-                fillcolor="yellow",
-                line=dict(
-                    color="yellow",
-                    width=1
-                         )
-                )
-# fig_l.add_shape(dict(type="path",
-#                 path="M 0 0 L 0 1 L 1 0 Z",
+# fig_l.add_shape(type="rect",
+#                 xref='x', yref='y',
+#                 x0=0, x1=1, y0=0, y1=1,
 #                 fillcolor="yellow",
-#                 line_color="Yellow"
-#                      )
+#                 line=dict(
+#                     color="yellow",
+#                     width=1
+#                          )
 #                 )
+fig_l.add_shape(dict(type="path",
+                path="M 0 0 L 0 1 L 1 0 Z",
+                fillcolor="yellow",
+                line_color="Yellow"
+                     )
+                )
+fig_l.add_shape(dict(type="path",
+                path="M 1 1 L 0 1 L 1 0 Z",
+                fillcolor="white",
+                line_color="white"
+                     )
+                )
 fig_l.add_shape(type="line",
                 x0=0, y0=0, x1=0, y1=1,
                 line=dict(
@@ -81,7 +87,8 @@ app.layout = html.Div([
         html.H2('Hover over left plot to generate basis on right plot')
     ], style={'width': '49%', 'display': 'inline-block', 'padding': '0 10'}),
     html.Div([
-        html.H3('Select start and end values and press generate to create gif of lattices between those points'),
+        html.H3('Select start and end values and press generate to create GIF of lattices between those points'),
+        html.H5('Note: generating a GIF may take a few minutes'),
         dcc.Input(
             id="input_x0", type="number", placeholder="Start X",
             min=0, max=1, step=0.001, debounce=True
