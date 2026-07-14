@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 
 from cif_read_site_cols import read_site_line
 
@@ -14,6 +15,7 @@ def read_cif(filepath):
         "Formula": "",
         "Name": "",
         "Cell_lengths": [],
+        "Cell_angles": [],
         "Atom_sites": None
     }
     author_flag = False
@@ -22,15 +24,12 @@ def read_cif(filepath):
     atom_site_flag = False
     site_cols = []
     site_dict = {}
-    atom_type_flag = False
     with open(filepath, 'r') as cif:
         for line in cif:
             if "_publ_section_title" in line:
                 title_flag = True
             elif "_atom_site" in line:
                 atom_site_flag = True
-            elif "_atom_type" in line:
-                atom_type_flag = True
             if author_flag:
                 if "_" in line:
                     author_flag = False
@@ -110,6 +109,11 @@ def read_cif(filepath):
                 split2 = split[1].split("(")
                 length = split2[0].strip(" ")
                 out["Cell_lengths"].append(float(length))
+            elif "_cell_angle" in line:
+                split = line.split(maxsplit=1)
+                split2 = split[1].split("(")
+                angle = split2[0].strip(" ")
+                out["Cell_angles"].append(float(angle))
             elif "_cod_database_code" in line:
                 split = line.split(maxsplit=1)
                 code = split[1].strip(" '\n")
@@ -117,27 +121,108 @@ def read_cif(filepath):
     return out
 
 
-def split_fract_coords(cif_dict):
-    """
-    This function splits the fractional x, y and z co-ordinates of the atoms in the cif file into
-    three pairs of co-ordinates for three key sides of the unit cell
-    """
-    df = cif_dict["Atom_sites"]
-    fract_x = []
-    fract_y = []
-    fract_z = []
-    for idx, row in df.iterrows():
-        fract_x.append(row['atom fract x'])
-        fract_y.append(row['atom fract y'])
-        fract_z.append(row['atom fract z'])
-    out_dict = {
-        'xy': dict(x=fract_x, y=fract_y),
-        'yz': dict(y=fract_y, z=fract_z),
-        'xz': dict(x=fract_x, z=fract_z)
+def cif_read_lattice(filepath):
+    """This function reads only the lattice information from the input CIF file"""
+    out = {
+        "Cell_lengths": [],
+        "Cell_angles": []
     }
+    with open(filepath, 'r') as cif:
+        for line in cif:
+            if "_cell_length" in line:
+                split = line.split(maxsplit=1)
+                split2 = split[1].split("(")
+                length = split2[0].strip(" ")
+                out["Cell_lengths"].append(float(length))
+            elif "_cell_angle" in line:
+                split = line.split(maxsplit=1)
+                split2 = split[1].split("(")
+                angle = split2[0].strip(" ")
+                out["Cell_angles"].append(float(angle))
+            else:
+                continue
+    return out
+
+
+def compare(dict, val1, val2):
+    """function to compare two vectors of a 2D unit cell and insert them into a dictionary"""
+    if val1 >= val2 and dict["ang"] == 90:
+        dict["v1"][0] = val2
+        dict["v2"][1] = val1
+    elif val1 >= val2 and dict["ang"] > 90:
+        dict["v1"][0] = val2
+        dict["v2"][1] = val1 * np.sin(dict["ang"] * (np.pi/180))
+        dict["v2"][0] = val1 * np.cos(dict["ang"] * (np.pi/180))
+    elif val2 >= val1 and dict["ang"] == 90:
+        dict["v1"][0] = val1
+        dict["v2"][1] = val2
+    else:
+        dict["v1"][0] = val1
+        dict["v2"][0] = val2 * np.sin(dict["ang"] * (np.pi/180))
+        dict["v2"][1] = val2 * np.cos(dict["ang"] * (np.pi/180))
+    dict["v0"][0] = -1 * dict["v1"][0] + -1 * dict["v2"][0]
+    dict["v0"][1] = -1 * dict["v1"][1] + -1 * dict["v2"][1]
+
+    return dict
+
+
+def create_plane_groups(in_dict):
+    """
+    This function extracts the side lengths and angles for the three key planes of the unit cell
+    """
+    out_dict = {
+        'ab': dict(v1=np.zeros(2, dtype=float),
+                   v2=np.zeros(2, dtype=float),
+                   v0=np.zeros(2, dtype=float),
+                   ang=in_dict["Cell_angles"][2]),
+        'bc': dict(v1=np.zeros(2, dtype=float),
+                   v2=np.zeros(2, dtype=float),
+                   v0=np.zeros(2, dtype=float),
+                   ang=in_dict["Cell_angles"][0]),
+        'ac': dict(v1=np.zeros(2, dtype=float),
+                   v2=np.zeros(2, dtype=float),
+                   v0=np.zeros(2, dtype=float),
+                   ang=in_dict["Cell_angles"][1])
+    }
+    length_a = in_dict["Cell_lengths"][0]
+    length_b = in_dict["Cell_lengths"][1]
+    length_c = in_dict["Cell_lengths"][2]
+    out_dict["ab"] = compare(out_dict["ab"], length_a, length_b)
+    out_dict["bc"] = compare(out_dict["bc"], length_b, length_c)
+    out_dict["ac"] = compare(out_dict["ac"], length_a, length_c)
     return out_dict
 
 
-filepath = "COMP702/app_latices/CIF_files/1000047.cif"
-dict = read_cif(filepath)
-print(dict)
+def create_pinv(plane_dict):
+    """
+    This function calculates the root and subsequently the projected invariants
+    of a given 2D lattice
+    """
+    r12 = np.sqrt(-1 * np.dot(plane_dict["v1"], plane_dict["v2"]))
+    r01 = np.sqrt(-1 * np.dot(plane_dict["v0"], plane_dict["v1"]))
+    r02 = np.sqrt(-1 * np.dot(plane_dict["v0"], plane_dict["v2"]))
+    size = r12 + r01 + r02
+    out = {
+        'p12': np.round((r12 / size), 4),
+        'p01': np.round((r01 / size), 4),
+        'p02': np.round((r02 / size), 4)
+        }
+    return out
+
+
+def pinv_coords(inv_dict):
+    """
+    takes the projected invatiants and outputs 
+    the x and y co-ordiantes of the lattice on the QT
+    """
+    return (
+            (inv_dict['p02'] - inv_dict['p01']),
+            np.round((3 * inv_dict['p12']), 3)
+            )
+
+
+filepath = "COMP702/app_latices/CIF_files/1544392.cif"
+test_out = read_cif(filepath)
+test_pl = create_plane_groups(test_out)
+test_pi = create_pinv(test_pl["ab"])
+print(pinv_coords(test_pi))
