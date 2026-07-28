@@ -1,4 +1,5 @@
-from dash import Dash, dcc, html, ctx, Input, Output, callback
+import dash
+from dash import dcc, html, ctx, Input, Output, callback
 from plotly_gif import GIF, capture
 import numpy as np
 import plotly.graph_objects as go
@@ -8,15 +9,16 @@ from lattice_points import create_lattice_points
 from lattice_vals import generate_vals
 from lattice_gif import generate_gif_frame
 
+dash.register_page(__name__, path='/lattice-visualiser', name="Lattice visualiser")
 # constants and configs
 size = np.linspace(0, 1, 1001)
 origin = {'x': 0, 'y': 0}
 config = {'displayModeBar': False}
-app = Dash()
+
 
 # creating figures for the dashboard
 fig_l = go.Figure(data=[go.Heatmap(x=size, y=size,
-                        z=np.zeros((1000, 1000)),
+                        z=np.zeros((1001, 1001)),
                         opacity=0,
                         hoverinfo='x+y',
                         showscale=False
@@ -82,7 +84,7 @@ fig_l.update_xaxes(range=[-0.1, 1.1])
 fig_l.update_yaxes(range=[-0.1, 1.1])
 fig_l.update_layout()
 # app layout
-app.layout = html.Div([
+layout = html.Div([
     html.Div([
         html.H2('Hover over left plot to generate basis on right plot')
     ], style={'width': '49%', 'display': 'inline-block', 'padding': '0 10'}),
@@ -195,5 +197,5 @@ def output_gif(x0, x1, y0, y1, n_clicks):
         return ""
 
 
-if __name__ == "__main__":
-    app.run(debug=True)
+# if __name__ == "__main__":
+#     app.run(debug=True)

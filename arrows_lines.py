@@ -9,10 +9,18 @@ def create_arrows(vals, origin, colours, sign):
     dy = vals['v2'] * np.sin(vals['ang'])
     dy_x = vals['v2'] * np.cos(vals['ang'])  # x component of dy
     if sign == "+":
-        x_vals = [origin['x'] + dx, origin['x'] + dy_x, origin['x'] - dx - dy_x]
+        x_vals = [
+                  origin['x'] + dx,
+                  origin['x'] + dy_x,
+                  origin['x'] - dx - dy_x
+                  ]
         y_vals = [origin['y'], origin['y'] + dy, origin['y'] - dy]
     else:
-        x_vals = [origin['x'] - dx, origin['x'] - dy_x, origin['x'] + dx + dy_x]
+        x_vals = [
+                  origin['x'] - dx,
+                  origin['x'] - dy_x,
+                  origin['x'] + dx + dy_x
+                  ]
         y_vals = [origin['y'], origin['y'] - dy, origin['y'] + dy]
     for i in range(0, 3):
         arrows.append(
