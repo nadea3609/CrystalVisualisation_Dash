@@ -9,3 +9,5 @@ Numpy
 Plotly:
 plotly graph objects
 plotly_gif
+os
+Sqlite3
