@@ -87,8 +87,9 @@ layout = html.Div([
                 two points in the space of 2D continuous lattices.
                """),
         html.P("""
-                This shows that any theoretical 2D lattice can be represented by a point within the
-                space of continuous 2D lattices.
+                This demonstrates the basic concept of a continuous classification scheme and it's
+                ability to represent any theoretical lattice as a point within a 2-demensional space
+                 containing all theoretical configurations.
                """)
     ], style={'width': '49%', 'display': 'inline-block', 'padding': '0 10'}),
     html.Div([

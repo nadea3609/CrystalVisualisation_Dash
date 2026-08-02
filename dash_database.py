@@ -70,7 +70,15 @@ layout = html.Div([
         html.H1("Database map"),
         html.P("""This shows how crystals within a modern large database
                    map onto the space of 2D lattices created by the
-                   continuous classification scheme"""),
+                   continuous classification scheme. 
+                   Here the distribution can be viewed as a 2D heatmap and a 3D histogram.
+                   The graphs here use a logarithmic scale to account for the high numbers 
+                   of square lattices along y = 0, and hexagonal lattices at [0, 1].
+                   """),
+        html.Div("This demonstrates the applicability of a continuous classification scheme" \
+                 "to real-life data, showing the distribution of lattice structures of an" \
+                 "entire database onto the space of 2D lattice structures. " \
+                 "This can allow for visualisation of structural trends within sets of crystals."),
         html.Div([
             dcc.Graph(figure=fig_l, config=config)
                  ], style={'width': '49%', 'display': 'inline-block', 'padding': '0 10'}),

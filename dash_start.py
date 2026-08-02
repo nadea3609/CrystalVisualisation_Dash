@@ -21,7 +21,8 @@ layout = html.Div([
                 A continuous classification scheme is capable of uniquely identifying lattice structures
                 up to rigid motion (superposition) and uniform scaling. This also allows for distinguishing between
                 close but distinct structures caused by slight differences in real or simulated crystallisation conditions.
-               """)
+               """),
+        html.P("For some relevant research papers, see the references page.")
     ], style={'width': '49%', 'display': 'inline-block', 'position': 'absolute', 'padding': '0 10'}),
     html.Div([
         html.Img(src=dash.get_asset_url("QT.png")),
