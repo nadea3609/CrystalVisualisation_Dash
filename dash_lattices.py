@@ -13,7 +13,7 @@ dash.register_page(__name__, path='/lattice-visualiser', name="Lattice visualise
 # constants and configs
 size = np.linspace(0, 1, 1001)
 origin = {'x': 0, 'y': 0}
-config = {'displayModeBar': False}
+config = {'displayModeBar': False, 'responsive': True}
 
 
 # creating figures for the dashboard
@@ -28,16 +28,6 @@ fig_l = go.Figure(data=[go.Heatmap(x=size, y=size,
                      width=600,
                      height=600
                   ))
-
-# fig_l.add_shape(type="rect",
-#                 xref='x', yref='y',
-#                 x0=0, x1=1, y0=0, y1=1,
-#                 fillcolor="yellow",
-#                 line=dict(
-#                     color="yellow",
-#                     width=1
-#                          )
-#                 )
 fig_l.add_shape(dict(type="path",
                 path="M 0 0 L 0 1 L 1 0 Z",
                 fillcolor="yellow",
@@ -86,7 +76,20 @@ fig_l.update_layout()
 # app layout
 layout = html.Div([
     html.Div([
-        html.H2('Hover over left plot to generate basis on right plot')
+        html.H2('Lattice visualiser'),
+        html.P("""
+                This visualiser dynamically shows how 2D crystal lattices can be represented
+                in a continuous fashion. Hovering over the left plot displays a dynamically updating
+                lattice on the right plot.
+               """),
+        html.P("""
+               The input boxes to the right can be used to generate a gif of the lattices between
+                two points in the space of 2D continuous lattices.
+               """),
+        html.P("""
+                This shows that any theoretical 2D lattice can be represented by a point within the
+                space of continuous 2D lattices.
+               """)
     ], style={'width': '49%', 'display': 'inline-block', 'padding': '0 10'}),
     html.Div([
         html.H3('Select start and end values and press generate to create GIF of lattices between those points'),
@@ -118,7 +121,7 @@ layout = html.Div([
     ], style={'width': '49%', 'display': 'inline-block', 'padding': '0 10'}),
     html.Div([
         dcc.Graph(config=config, id='right-fig'),
-        html.Code('v1=0, v2=0, ang=90', id='txt-output')
+        html.P('v1=0, v2=0, ang=90', id='txt-output')
     ], style={'display': 'inline-block', 'width': '49%'}),
 ])
 
