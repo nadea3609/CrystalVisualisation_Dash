@@ -1,7 +1,7 @@
 # CrystalVisualisation_Dash
 Code repository for MSc project "Interactive Visualisation of Crystals"
 
-## Required libraries:
+## Required packages:
 
 Dash
 
