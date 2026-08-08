@@ -85,7 +85,7 @@ layout = html.Div([
                     ),
             html.Li("Download the database you wish to use (warning, these tend to be very large, make sure you have enough space!)"),
             html.Li("Run the 'database_scan.py' code on the downloaded database, this will take some time."),
-            html.Li("Replace the 'cod.db' file in this app's folder with the database file produced")
+            html.Li("Replace the 'cod_complete.db' file in this app's folder with the database file produced (you may need to rename the file or modify the code so it recognises the new database)")
         ])
 ])
 

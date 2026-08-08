@@ -6,7 +6,7 @@ app = Dash("Lattice visualiser",
            pages_folder="app_lattices_python")
 app.config.suppress_callback_exceptions = True
 app.layout = html.Div([
-    html.H1("Continuous 2D lattices"),
+    html.H1("Continuous 2D lattice classification with root invariants"),
     html.Div([
         html.Div(
             dcc.Link(f"{page['name']} - {page['path']}", href=page["relative_path"])
