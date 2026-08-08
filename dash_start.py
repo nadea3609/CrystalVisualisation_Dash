@@ -22,6 +22,14 @@ layout = html.Div([
                 up to rigid motion (superposition) and uniform scaling. This also allows for distinguishing between
                 close but distinct structures caused by slight differences in real or simulated crystallisation conditions.
                """),
+        html.H2("How does the continuous classification scheme work?"),
+        html.P("""
+                The continuous classification scheme operates using 'obtuse superbases'.
+                 A superbase are a set of vectors {v\u2080, v\u2081...v\u2099} where v\u2080 = -\u2211 v\u2099 with 'conorms'
+                 p\u1D62\u2C7C = -v\u1D62 \u00B7 v\u2C7C for all distinct indicies of i,j \u2208 {0, 1...n}.
+                 A superbase is considered 'obtuse' if all conorms p\u1D62\u2C7C \u2265 0, if this is true, then all angles
+                 between the vectors in the superbase are non-acute. A superbase can be called 'strict' if all p\u1D62\u2C7C \u003E 0
+               """),
         html.P("For some relevant research papers, see the references page.")
     ], style={'width': '49%', 'display': 'inline-block', 'position': 'absolute', 'padding': '0 10'}),
     html.Div([

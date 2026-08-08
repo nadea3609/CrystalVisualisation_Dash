@@ -80,18 +80,18 @@ layout = html.Div([
         html.P("""
                 This visualiser dynamically shows how 2D crystal lattices can be represented
                 in a continuous fashion. Hovering over the left plot displays a dynamically updating
-                lattice on the right plot.
+                obtuse superbase representing a 2D lattice on the right plot.
                """),
         html.P("""
                The input boxes to the right can be used to generate a gif of the lattices between
                 two points in the space of 2D continuous lattices.
                """),
         html.P("""
-                This demonstrates the basic concept of a continuous classification scheme and it's
-                ability to represent any theoretical lattice as a point within a 2-demensional space
-                 containing all theoretical configurations.
+                This demonstrates the basic concept of the continuous, invariant-based classification of
+                Kurlin (2022) and shows how the quotient triangle can visualise any 2D lattice under isometry
+                 and uniform scaling.
                """)
-    ], style={'width': '49%', 'display': 'inline-block', 'padding': '0 10'}),
+    ], style={'width': '49%', 'display': 'inline-block', 'padding': '0 10', 'font-size': '18px'}),
     html.Div([
         html.H3('Select start and end values and press generate to create GIF of lattices between those points'),
         html.H5('Note: generating a GIF may take a few minutes'),

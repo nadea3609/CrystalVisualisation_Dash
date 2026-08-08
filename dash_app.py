@@ -4,7 +4,7 @@ from dash import Dash, html, dcc
 app = Dash("Lattice visualiser",
            use_pages=True,
            pages_folder="app_lattices_python")
-
+app.config.suppress_callback_exceptions = True
 app.layout = html.Div([
     html.H1("Continuous 2D lattices"),
     html.Div([

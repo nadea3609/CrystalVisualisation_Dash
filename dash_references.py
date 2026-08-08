@@ -3,7 +3,7 @@ from dash import html
 
 dash.register_page(__name__, path="/Reference-list", name="References")
 
-layout=html.Div([
+layout = html.Div([
     html.H1("References"),
     html.Ul([
         html.Li("""
@@ -23,9 +23,21 @@ layout=html.Div([
             IUCrJ 11 (4): 453-63. https://doi.org/10.1107/S2052252524004056.
         """),
         html.Li("""
-        [4]: Kurlin, Vitaliy. 2024. 'Mathematics of 2-Dimensional Lattices'.
+        [4]: Kurlin, Vitaliy. 2022. 'Mathematics of 2-Dimensional Lattices'.
           Foundations of Computational Mathematics 24 (3): 805-63.
             https://doi.org/10.1007/s10208-022-09601-8.
+        """),
+        html.Li("""
+        [5]: Gražulis, Saulius, Daniel Chateigner, Robert T. Downs, et al. 2009.
+          'Crystallography Open Database - an Open-Access Collection of Crystal Structures'.
+          Journal of Applied Crystallography 42 (4): 726-29.
+          https://doi.org/10.1107/S0021889809016690.
+        """),
+        html.Li("""
+        [6]: Gražulis, Saulius, Adriana Daškevič, Andrius Merkys, et al. 2012.
+         'Crystallography Open Database (COD): An Open-Access Collection of Crystal Structures
+          and Platform for World-Wide Collaboration'. Nucleic Acids Research 40 (D1): D420-27.
+          https://doi.org/10.1093/nar/gkr900.
         """)
     ])
 ])
