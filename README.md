@@ -13,10 +13,11 @@ plotly graph objects
 
 plotly_gif (third party, needs to be installed separately from plotly official packages)
 
-os
-
 Sqlite3 (requires SQLite third party library to be installed)
 
+os (only for database_scan.py, which is not required for core operation of app)
+
+glob (only required for database_scan.py)
 ## Note
 
 Before running, extract the database from "cod_complete.zip" and place in working python directory alongside the app's python scripts
