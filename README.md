@@ -1,6 +1,8 @@
 # CrystalVisualisation_Dash
 Code repository for MSc project "Interactive Visualisation of Crystals"
 
+Main stable branch
+
 ## Required packages:
 
 Dash
@@ -18,6 +20,6 @@ Sqlite3 (requires SQLite third party library to be installed)
 os (only for database_scan.py, which is not required for core operation of app)
 
 glob (only required for database_scan.py)
-## Note
+## Installation
 
-Before running, extract the database from "cod_complete.zip" and place in working python directory alongside the app's python scripts
+Before running, extract the database from "cod_complete.zip" and place in working python directory alongside the app's python scripts and the assets folder
