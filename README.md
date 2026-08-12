@@ -23,11 +23,9 @@ os (only for database_scan.py, which is not required for core operation of app)
 
 glob (only required for database_scan.py)
 ## Installation
+1)Install the packages required for the app as listed above
 
-### Before running 
-extract the database from "cod_complete.zip" and place in working python directory alongside the app's python scripts and the assets folder
+2)Extract the database from "cod_complete.zip" and place in working python directory alongside the app's python scripts and the assets folder
 
-Install the packages required for the app as listed above
-
-Run the "Dash_app.py" in any python interpreter and paste the IP output into the terminal into any browser (although interpreters such as VScode support native running of the app)
+3)Run the "Dash_app.py" in any python interpreter and paste the IP output into the terminal into any browser (although interpreters such as VScode support native running of the app)
 
