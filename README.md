@@ -19,7 +19,7 @@ Sqlite3 (requires SQLite third party library to be installed) v3.14 (optional pa
 
 os (only for database_scan.py, which is not required for core operation of app) (default package)
 
-glob (only required for database_scan.py) (default package
+glob (only required for database_scan.py) (default package)
 ## Installation
 1)Install the packages required for the app as listed above
 
