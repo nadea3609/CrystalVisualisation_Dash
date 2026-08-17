@@ -21,7 +21,7 @@ os (only for database_scan.py, which is not required for core operation of app) 
 
 glob (only required for database_scan.py) (default package)
 ## Installation
-1)Install the packages required for the app as listed above
+1)Install the packages required for the app as listed above, you can do this manually or run "install_dependencies.py" included in this repository
 
 2)Extract the database from "cod_complete.zip" and place in python directory alongside the "app_lattices_python" and "assets" folder
 
