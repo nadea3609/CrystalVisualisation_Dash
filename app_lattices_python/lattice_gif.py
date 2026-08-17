@@ -18,7 +18,7 @@ def generate_gif_frame(x, y, origin):
     else:
         vals = generate_vals(x, y)
         arrows = create_arrows(vals, origin, arrow_cols, "+")
-    data = create_lattice_points(vals, origin, 2)
+    data = create_lattice_points(vals, origin, 4)
     fig.add_trace(go.Scatter(data, mode='markers',
                              marker=dict(size=20,
                                          color='black'),
