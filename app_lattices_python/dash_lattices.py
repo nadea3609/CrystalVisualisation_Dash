@@ -95,24 +95,22 @@ layout = html.Div([
     html.Div([
         html.H3('Select start and end values and press generate to create GIF of lattices between those points'),
         html.H5('Note: generating a GIF may take a few minutes'),
-        html.H5("Start X"),
+        html.H5("X coordinates"),
         dcc.Input(
-            id="input_x0", type="number", placeholder="Start X",
+            id="input_x0", type="number", placeholder="Start",
             min=0, max=1, step=0.001, debounce=True
             ),
-        html.H5("End X"),
         dcc.Input(
-            id="input_x1", type="number", placeholder="End X",
+            id="input_x1", type="number", placeholder="End",
             min=0, max=1, step=0.001, debounce=True
             ),
-        html.H5("Start Y"),
+        html.H5("Y coordinates"),
         dcc.Input(
-            id="input_y0", type="number", placeholder="Start Y",
+            id="input_y0", type="number", placeholder="Start",
             min=0, max=1, step=0.001, debounce=True
             ),
-        html.H5("End Y"),
         dcc.Input(
-            id="input_y1", type="number", placeholder="End Y",
+            id="input_y1", type="number", placeholder="End",
             min=0, max=1, step=0.001, debounce=True
             ),
         dcc.Button(id='gif-button', children="Generate", n_clicks=0),
