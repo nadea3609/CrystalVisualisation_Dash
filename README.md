@@ -1,27 +1,28 @@
 # CrystalVisualisation_Dash
 Code repository for MSc project "Interactive Visualisation of Crystals"
 
-Experimental branch: this will contain experimental changes being tested, the code may not be completely stable
+Experimental branch: this may contain experimental changes being tested, the code may not be completely stable
 
 ## Required packages:
 
-Dash
+Dash v4.2.0
 
-Numpy
+Numpy v2.4.3
 
-Plotly:
+Plotly v6.7.0
 
-plotly graph objects
+plotly_gif (third party, needs to be installed separately from plotly official packages) v0.0.4
 
-plotly_gif (third party, needs to be installed separately from plotly official packages)
+https://github.com/dylanwal/plotly_gif/blob/master/README.md
 
-Sqlite3 (requires SQLite third party library to be installed)
+Sqlite3 (requires SQLite third party library to be installed) v3.14 (optional package included on many python installations be default)
 
-os (only for database_scan.py, which is not required for core operation of app)
+os (only for database_scan.py, which is not required for core operation of app) (default package)
 
-glob (only required for database_scan.py)
-## Installation note
+glob (only required for database_scan.py) (default package)
+## Installation
+1)Install the packages required for the app as listed above, you can do this manually or run "install_dependencies.py" included in this repository
 
-Before running, extract the database from "cod_complete.zip" and place in working python directory alongside the app's python scripts
+2)Extract the database from "cod_complete.zip" and place in python directory alongside the "app_lattices_python" and "assets" folder
 
-The assets folder also needs to be placed with the app's scripts
+3)Run the "Dash_app.py" in any python interpreter and paste the IP output into the terminal into any browser (although interpreters such as VScode support native running of the app)
