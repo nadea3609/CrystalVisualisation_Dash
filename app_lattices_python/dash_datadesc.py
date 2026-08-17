@@ -2,14 +2,16 @@ import dash
 from dash import html
 
 
-dash.register_page(__name__, path="/data-description", name="Data description")
+dash.register_page(__name__, path="/data-description", name="Data description", order=3)
 
 layout = html.Div([
     html.H3("COD database"),
     html.P("""
             The Crystallography Open Database is an open-access database which contains
              large numbers of crsystal structures stored as cif files. These are contributed
-             by researchers who submit their work to the database.
+             by researchers who submit their work to the database. The COD has over 500,000 
+             structures stored on it from mineralogy, crystallogrpahy, organic, and inorganic chemistry journals.
+
           """),
     html.H3("Data processing"),
     html.P("""

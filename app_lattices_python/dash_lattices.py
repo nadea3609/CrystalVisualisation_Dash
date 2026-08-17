@@ -9,7 +9,7 @@ from lattice_points import create_lattice_points
 from lattice_vals import generate_vals
 from lattice_gif import generate_gif_frame
 
-dash.register_page(__name__, path='/lattice-visualiser', name="Lattice visualiser")
+dash.register_page(__name__, path='/lattice-visualiser', name="Lattice visualiser", order=1)
 # constants and configs
 size = np.linspace(0, 1, 1001)
 origin = {'x': 0, 'y': 0}
@@ -49,7 +49,7 @@ fig_l.add_shape(type="line",
 fig_l.add_shape(type="line",
                 x0=1, y0=0, x1=1, y1=1,
                 line=dict(
-                    color="orange",
+                    color="green",
                     width=3
                 ))
 fig_l.add_shape(type="line",
@@ -67,7 +67,7 @@ fig_l.add_shape(type="line",
 fig_l.add_shape(type="line",
                 x0=0, y0=1, x1=1, y1=1,
                 line=dict(
-                    color="green",
+                    color="orange",
                     width=3
                 ))
 fig_l.update_xaxes(range=[-0.1, 1.1])
@@ -95,18 +95,22 @@ layout = html.Div([
     html.Div([
         html.H3('Select start and end values and press generate to create GIF of lattices between those points'),
         html.H5('Note: generating a GIF may take a few minutes'),
+        html.H5("Start X"),
         dcc.Input(
             id="input_x0", type="number", placeholder="Start X",
             min=0, max=1, step=0.001, debounce=True
             ),
+        html.H5("End X"),
         dcc.Input(
             id="input_x1", type="number", placeholder="End X",
             min=0, max=1, step=0.001, debounce=True
             ),
+        html.H5("Start Y"),
         dcc.Input(
             id="input_y0", type="number", placeholder="Start Y",
             min=0, max=1, step=0.001, debounce=True
             ),
+        html.H5("End Y"),
         dcc.Input(
             id="input_y1", type="number", placeholder="End Y",
             min=0, max=1, step=0.001, debounce=True
@@ -146,7 +150,7 @@ def update_graph(hoverData):
         txt = f"v1= {'%.3f' % vals['v1']}, v2={'%.3f' % (vals['v2'])}, ang={'%.3f' % ((vals['ang']) * 180/np.pi)}"
     else:
         txt = f"v1= {'%.3f' % vals['v1']}, v2={'%.3f' % vals['v2']}, ang={'%.3f' % (vals['ang'] * 180/np.pi)}"
-    data = create_lattice_points(vals, origin, 2)
+    data = create_lattice_points(vals, origin, 4)
     fig_r = go.Figure(data=[go.Scatter(data, mode='markers',
                                        marker=dict(size=20,
                                                    color='black'),

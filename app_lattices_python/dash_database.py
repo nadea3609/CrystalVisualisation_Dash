@@ -4,7 +4,7 @@ import plotly.graph_objects as go
 import numpy as np
 import sqlite3 as sql
 
-dash.register_page(__name__, path="/database-map", name="Database map")
+dash.register_page(__name__, path="/database-map", name="Database map", order=2)
 
 # constants and configs
 np.seterr(divide="ignore")
